@@ -1,65 +1,114 @@
 
 import { observable, decorate, action, configure, runInAction } from "mobx"
-import { observer } from "mobx-react"
-
-var appState = observable({
-  timer: 0,
-
-})
-appState.increment = function(){
-  this.timer ++;
-}
-appState.decreament = function(){
-  this.timer--;
-}
-appState.resetTimer = function(){
-  this.timer = 0;
-}
+import {contactsList} from './contacts'
+import {imMessages} from './messages'
+import { userProfileMock, contactProfileMock } from './profiles'
 
 configure({enforceActions: 'observed'})
 
 
-  class AppState {
-    messages = []
-    timer = 0
+class AppState {
+  messages = []
+  contacts = []
+  userProfile = {}
+  openUserStatusOptions = false
+  openUserContactInfo = false
+  timer = 0
 
-    increment = function(){
-        this.timer ++;
-    }
+  increment = function(){
+      this.timer ++;
+  }
 
-    decreament = function(){
-        this.timer--;
-    }
+  decreament = function(){
+      this.timer--;
+  }
 
-    resetTimer = function(){
-       // this.timer = 0;
-        this.getMessages()
-        .then(data => {
-            runInAction(() =>{
-                this.messages = data
-            })
+  fetchMessages = () => {
+    return new Promise((resolve, reject) =>{
+      setTimeout(() => resolve(imMessages.concat(imMessages)), 200)
+    })
+  }
 
-        })
-    }
+  getMessages = () => {
+    this.fetchMessages()
+      .then(messages =>{
+          runInAction(() =>{
+              this.messages = messages
+          })
+      })
+  }
 
-    getMessages = () => {
-        return (
-            new Promise((resolve, reject) =>{
-                setTimeout(() => resolve([1,2,2,3]), 3000)
-            })
-        )
-    }
+  fetchContacts = (page) => {
+    return new Promise((resolve, reject) =>{
+      setTimeout(() => resolve(contactsList.concat(contactsList)), 200)
+    })
+  }
 
-    setMessages = messages => {
-        this.messages = messages
-    }
+  getContacts = (page) => {
+    this.fetchContacts()
+      .then(contacts =>{
+          runInAction(() =>{
+              this.contacts = contacts
+          })
+      })
+  }
+
+  fetchUserProfile = (page) => {
+    return new Promise((resolve, reject) =>{
+      setTimeout(() => resolve(userProfileMock), 200)
+    })
+  }
+
+  getUserProfile = (page) => {
+    this.fetchUserProfile()
+      .then(userProfile =>{
+          runInAction(() =>{
+              this.userProfile = userProfile
+          })
+      })
+  }
+
+  fetchContactProfile = (page) => {
+      return new Promise((resolve, reject) =>{
+          setTimeout(() => resolve(contactProfileMock), 200)
+      })
+  }
+
+  getContactProfile = (page) => {
+      this.fetchContactProfile()
+          .then(contactProfile =>{
+              runInAction(() =>{
+                  this.contactProfile = contactProfile
+              })
+          })
+  }
+
+  toggleUserStatusOptions = () => {
+    runInAction(() =>{
+      this.openUserStatusOptions = !this.openUserStatusOptions
+    })
+  }
+  toggleUserContactInfo = () => {
+    runInAction(() =>{
+      this.openUserContactInfo = !this.openUserContactInfo
+    })
+  }
 }
 
 decorate(AppState, {
     messages: observable,
+    contacts: observable,
+    userProfile: observable,
+    contactProfile: observable,
+    openUserStatusOptions: observable,
+    openUserContactInfo: observable,
     timer: observable,
     getMessages: action,
-    setMessages: action,
+    getContacts: action,
+    getUserProfile: action,
+    getContactProfile: action,
+    toggleUserStatusOptions: action,
+    toggleUserContactInfo: action,
 
 })
 
