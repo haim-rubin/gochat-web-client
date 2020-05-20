@@ -3,7 +3,7 @@ import { observable, decorate, action, configure, runInAction } from "mobx"
 import {contactsList} from './contacts'
 import {imMessages} from './messages'
 import { userProfileMock, contactProfileMock } from './profiles'
-
+import { get } from '../util/http'
 configure({enforceActions: 'observed'})
 
 
@@ -24,9 +24,10 @@ class AppState {
   }
 
   fetchMessages = () => {
-    return new Promise((resolve, reject) =>{
-      setTimeout(() => resolve(imMessages.concat(imMessages)), 200)
-    })
+    return (
+      get({url: '/api/messages'})
+        .then(imMessages => imMessages.concat(imMessages))
+    )
   }
 
   getMessages = () => {
