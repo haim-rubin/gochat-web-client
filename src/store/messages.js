@@ -7,7 +7,7 @@ export const imMessages = [{
     }
     },
     {
-    direction: 'replies',
+    direction: 'received',
     thumbnail: 'http://emilcarlsson.se/assets/harveyspecter.png',
     content: {
         type: 'text',
@@ -15,7 +15,7 @@ export const imMessages = [{
     }
     },
     {
-    direction: 'replies',
+    direction: 'received',
     thumbnail: 'http://emilcarlsson.se/assets/harveyspecter.png',
     content: {
         type: 'text',
@@ -31,7 +31,7 @@ export const imMessages = [{
     }
     },
     {
-    direction: 'replies',
+    direction: 'received',
     thumbnail: 'http://emilcarlsson.se/assets/harveyspecter.png',
     content: {
         type: 'text',
@@ -39,7 +39,7 @@ export const imMessages = [{
     }
     },
     {
-    direction: 'replies',
+    direction: 'received',
     thumbnail: 'http://emilcarlsson.se/assets/harveyspecter.png',
     content: {
         type: 'text',
@@ -55,7 +55,7 @@ export const imMessages = [{
     }
     },
     {
-    direction: 'replies',
+    direction: 'received',
     thumbnail: 'http://emilcarlsson.se/assets/harveyspecter.png',
     content: {
         type: 'text',

@@ -8,9 +8,15 @@ const Conversation = ({ appState }) => {
         <div className='content'>
             <ContactProfile {...appState.contactProfile}/>
             <Messages messages={appState.messages} />
-            <SendMessagePanel/>
+            <SendMessagePanel
+                onSend={() => {
+                    appState.sendTextMessage()
+                }}
+                value={appState.tappedMessage[appState.currentChat.ParticipanID || appState.currentChat.GroupID] || ''}
+                onTappedMessage={appState.onTappedMessage}
+                sendTextMessage={() => appState.sendTextMessage()}
+            />
         </div>
     )
 }
-
 export default Conversation

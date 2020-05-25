@@ -6,6 +6,7 @@ class App extends React.Component {
     this.props.appState.getUserProfile()
     this.props.appState.getContacts()
     this.props.appState.getMessages()
+    this.props.appState.login()
     const contactId = 1
     this.props.appState.getContactProfile(contactId)
 
