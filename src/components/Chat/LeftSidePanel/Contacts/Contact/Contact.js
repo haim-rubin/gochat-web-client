@@ -3,19 +3,19 @@ import cx from 'classnames'
 
 
 const Contact = ({
-    status,
-    thumbnail = 'http://emilcarlsson.se/assets/louislitt.png',
-    name,
-    preview
+    Status,
+    Thumbnail = 'http://emilcarlsson.se/assets/louislitt.png',
+    Name,
+    Preview
 }) => {
     return (
         <div className='contact'>
             <div className='wrap'>
-                <span className={cx('contact-status', status)}></span>
-                <img src={thumbnail} alt='' />
+                <span className={cx('contact-status', Status)}></span>
+                <img src={Thumbnail} alt='' />
                 <div className='meta'>
-                    <p className='name'>{name}</p>
-                    <p className='preview'>{preview}</p>
+                    <p className='name'>{Name}</p>
+                    <p className='preview'>{Preview}</p>
                 </div>
             </div>
         </div>

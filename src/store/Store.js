@@ -4,6 +4,7 @@ import {contactsList} from './contacts'
 import { userProfileMock, contactProfileMock } from './profiles'
 import { get } from '../util/http'
 import WebSocketMapperMiddleware from '../util/WebSocketMapperMiddleware'
+import { getQueryURL } from '../util/route'
 configure({enforceActions: 'observed'})
 
 const getDirection = (currentUser, UserID) => (
@@ -50,7 +51,7 @@ class AppState {
     ChatID:     '1',
     GroupID:    null,
     ParticipanID: '2',
-    UserId:  '1',
+    UserId:  getQueryURL().uid,
   }
   arrivedMessage = {}
   currentUser = {
@@ -84,9 +85,11 @@ class AppState {
   }
 
   fetchContacts = (page) => {
-    return new Promise((resolve, reject) =>{
-      setTimeout(() => resolve(contactsList.concat(contactsList)), 200)
-    })
+
+    return (
+      get({url: `/api/contacts?uid=${getQueryURL().uid}`})
+        .then(contacts => contacts)
+    )
   }
 
   getContacts = (page) => {
