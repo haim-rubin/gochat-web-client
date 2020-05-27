@@ -146,10 +146,15 @@ class AppState {
     this.tappedMessage[this.currentChat.ParticipanID || this.currentChat.GroupID] = value
   }
 
+  onContactClick = (contact) => {
+    console.log(`User ${contact.UserID} selected.`)
+    this.currentChat.ParticipanID = contact.UserID
+  }
+
   /* WebSocket part */
   login() {
 
-    this.webSocketMapperMiddleware.login({ token: '123' })
+    this.webSocketMapperMiddleware.login({ token: getQueryURL().uid })
       .then(({ connected }) => {
         if(!connected){
           return
@@ -219,6 +224,7 @@ decorate(AppState, {
     sendTextMessage: action,
 
     onTappedMessage: action,
+    onContactClick: action,
 })
 
 export default new AppState({ WebSocketMapperMiddleware })

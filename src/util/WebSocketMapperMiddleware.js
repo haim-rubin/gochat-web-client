@@ -8,7 +8,7 @@ class WebSocketMapperMiddleware {
 
     login({ token }){
         const { url } = this
-        this.webSocketHandler = new WebSocketHandler({ token, url })
+        this.webSocketHandler = new WebSocketHandler({ token, url, persistence: true })
 
         return (
             this.webSocketHandler.login()

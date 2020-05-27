@@ -11,7 +11,8 @@ const LeftSidePanel = ({ appState }) => {
             <SearchContactPanel/>
             <Contacts
                 contacts={appState.contacts}
-                openUserContactInfo={appState.openUserContactInfo} />
+                openUserContactInfo={appState.openUserContactInfo}
+                onContactClick={appState.onContactClick} />
             <BottomBar/>
         </div>
     )
