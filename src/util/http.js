@@ -64,9 +64,19 @@ const parseError = ref => {
 }
 
 export const get = ({ url, ...option }) => {
+    return (
+        fetch(url, getOptionExtends(option))
+            .then(checkStatus)
+            .then(parseJSON)
+            .catch(parseError)
+    )
+}
 
-    return fetch(url, getOptionExtends(option))
-        .then(checkStatus)
-        .then(parseJSON)
-        .catch(parseError)
-    }
+export const post = ({ url, ...option }) => {
+    return (
+        fetch(url, getOptionExtends({...option, method: 'POST', ...(option.body?{ body: JSON.stringify(option.body)}: {} ) }))
+            .then(checkStatus)
+            .then(parseJSON)
+            .catch(parseError)
+    )
+}

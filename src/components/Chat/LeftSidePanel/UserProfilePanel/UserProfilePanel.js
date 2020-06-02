@@ -10,22 +10,22 @@ const transitions = ['height', 'opacity', 'background']
 
 const UserProfilePanel = ({ appState }) => {
     return (
-        <div className={cx('user-profile-panel', { expanded: appState.openUserContactInfo })}>
+        <div className={cx('user-profile-panel', { expanded: appState.iMessages.openUserContactInfo })}>
             <div className='wrap'>
-                <UserProfile {...appState.userProfile} onClick={() =>{appState.toggleUserStatusOptions()}}/>
+                <UserProfile {...appState.iMessages.userProfile} onClick={() =>{appState.iMessages.toggleUserStatusOptions()}}/>
                 <i
                     className='fa fa-chevron-down expand-button'
                     aria-hidden='true'
-                    onClick={() => {appState.toggleUserContactInfo()}}>
+                    onClick={() => {appState.iMessages.toggleUserContactInfo()}}>
                 </i>
                 <Expand
-                    open={appState.openUserStatusOptions}
+                    open={appState.iMessages.openUserStatusOptions}
                     duration={300}
                     transitions={transitions}>
                     <UserStatusOptions/>
                 </Expand>
                 <Expand
-                    open={appState.openUserContactInfo}
+                    open={appState.iMessages.openUserContactInfo}
                     duration={300}
                     transitions={transitions}>
                     <UserContactInfo/>

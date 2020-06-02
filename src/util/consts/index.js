@@ -1,0 +1,1 @@
+export const emailRegexPattern = /^((?!\.)[\w-_.]*[^.])(@\w+)(\.\w+(\.\w+)?[^.\W])$/

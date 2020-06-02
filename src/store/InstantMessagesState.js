@@ -1,17 +1,17 @@
 
 import { observable, decorate, action, configure, runInAction } from 'mobx'
-import {contactsList} from './contacts'
 import { userProfileMock, contactProfileMock } from './profiles'
 import { get } from '../util/http'
-import WebSocketMapperMiddleware from '../util/WebSocketMapperMiddleware'
 import { getQueryURL } from '../util/route'
 configure({enforceActions: 'observed'})
 
-const getDirection = (currentUser, UserID) => (
-  currentUser.id === UserID
-  ? 'sent'
-  : 'received'
-)
+const getDirection = (currentUser, UserID) => {
+  return (
+    currentUser.UserID === UserID
+    ? 'sent'
+    : 'received'
+  )
+}
 
 const mapMessage = (message, currentUser) => {
   const {
@@ -35,8 +35,9 @@ const mapMessage = (message, currentUser) => {
   return mappedMessage
 }
 
-class AppState {
-  constructor({ WebSocketMapperMiddleware }){
+class InstantMessagesState {
+  constructor({ WebSocketMapperMiddleware, rootState }){
+    this.rootState = rootState
     this.webSocketMapperMiddleware = new WebSocketMapperMiddleware({ url:  `ws://${document.location.host}/ws` })
   }
 
@@ -55,8 +56,8 @@ class AppState {
   }
   arrivedMessage = {}
   currentUser = {
-    id: '1',
-    thumbnail: 'http://emilcarlsson.se/assets/harveyspecter.png'
+    thumbnail: 'http://emilcarlsson.se/assets/harveyspecter.png',
+    UserID:  getQueryURL().uid,
   }
   tappedMessage = {}
 
@@ -72,6 +73,15 @@ class AppState {
     return (
       get({url: '/api/messages'})
         .then(imMessages => imMessages.concat(imMessages))
+    )
+  }
+
+  sendActivationCode({ email }){
+    return (
+      get({url: `api/verification/code?username=${email}`})
+        .then(data => {
+          console.log(data)
+        })
     )
   }
 
@@ -200,7 +210,7 @@ class AppState {
   }
 }
 
-decorate(AppState, {
+decorate(InstantMessagesState, {
     messages: observable,
     contacts: observable,
     userProfile: observable,
@@ -227,4 +237,4 @@ decorate(AppState, {
     onContactClick: action,
 })
 
-export default new AppState({ WebSocketMapperMiddleware })
+export default InstantMessagesState

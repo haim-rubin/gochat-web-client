@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './components/App';
 import * as serviceWorker from './serviceWorker';
-import appState from './store/Store'
+import appState from './store/RootState'
 import { Provider } from 'mobx-react'
 import './css/index.css'
 

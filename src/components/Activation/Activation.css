@@ -1,0 +1,17 @@
+.activation{
+
+    height: 300px;
+    margin: auto;
+    text-align: center;
+    padding: 200px 0;
+}
+
+.activation-step{}
+.activation-step .header{padding: 18px 0; text-align: left; text-transform: uppercase;}
+.activation-step .submit{
+    vertical-align: top;
+    width: 100%;
+    border: 1px solid #ccc;
+    height: 40px;
+    text-align: center;
+}
