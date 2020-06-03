@@ -162,9 +162,9 @@ class InstantMessagesState {
   }
 
   /* WebSocket part */
-  login() {
+  registerInstantMessages(token) {
 
-    this.webSocketMapperMiddleware.login({ token: getQueryURL().uid })
+    this.webSocketMapperMiddleware.login(token)
       .then(({ connected }) => {
         if(!connected){
           return
@@ -230,7 +230,7 @@ decorate(InstantMessagesState, {
     getContactProfile: action,
     toggleUserStatusOptions: action,
     toggleUserContactInfo: action,
-    login: action,
+    registerInstantMessages: action,
     sendTextMessage: action,
 
     onTappedMessage: action,

@@ -1,10 +1,10 @@
 import React from 'react'
 
-const UserProfile = ({ name, thumbnail, status, onClick }) => {
+const UserProfile = ({ Nickname, Thumbnail, Status, onClick }) => {
     return (
         <div onClick={onClick}>
-            <img src={thumbnail} className={status} alt={name} />
-            <p>{name}</p>
+            <img src={Thumbnail} className={Status} alt={Nickname} />
+            <p>{Nickname}</p>
         </div>
     )
 }

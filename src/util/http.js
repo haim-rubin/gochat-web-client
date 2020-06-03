@@ -47,6 +47,9 @@ const parseError = ref => {
                     status,
                     error
                 }))
+                .then(error => {
+                    throw error
+                })
         )
     }
     else if(contentType.includes(CONTENT_TYPE.TEXT)){

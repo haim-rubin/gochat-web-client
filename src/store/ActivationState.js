@@ -1,11 +1,13 @@
 
-import { observable, decorate, action, configure, runInAction } from 'mobx'
-import { getActivationCode, verifyActivationCode } from '../services/httpService'
-import { emailRegexPattern } from '../util/consts'
+import { observable, decorate, action, configure, runInAction, get } from 'mobx'
+import { getActivationCode, verifyActivationCode, getUser } from '../services/httpService'
+import { emailRegexPattern, TOKEN_KEYWORD } from '../util/consts'
 configure({enforceActions: 'observed'})
 
 class ActivationState {
-    constructor({ doesUserActivated, activationCode, token, activationDetails , doesEmailIsValid, step, doesItFinishInputCode, code }){
+    constructor({ rootState, doesUserActivated, activationCode, token,
+                    activationDetails, doesEmailIsValid, step,
+                    isActivated, doesItFinishInputCode, code, userInfo }){
         this.doesUserActivated = doesUserActivated
         this.activationCode = activationCode
         this.token = token
@@ -14,6 +16,9 @@ class ActivationState {
         this.step = step
         this.doesItFinishInputCode = doesItFinishInputCode
         this.code = code
+        this.rootState = rootState
+        this.isActivated = isActivated
+        this.userInfo = userInfo
     }
 
     verificationDetails = {}
@@ -41,18 +46,42 @@ class ActivationState {
                 })
             })
             .catch(error => {
-
+                console.error(error)
             })
     }
     //Step 2 verify activation code
     onVerifyCode = () => {
         verifyActivationCode({ ...this.verificationDetails, code: this.code })
-            .then(token =>{
+            .then(payload  =>{
                 runInAction(() =>{
-                    this.token = token
+                    if(payload.token){
+                        this.rootState.storage.set(TOKEN_KEYWORD, payload)
+                        this.getUserInfo()
+                    }
                 })
             })
             .catch(error => {
+                this.rootState.storage.set(TOKEN_KEYWORD, {token: null})
+                console.error(error)
+            })
+    }
+
+    getUserInfo = () => {
+        getUser()
+            .then(userInfo  =>{
+                if (userInfo){
+                    runInAction(() => {
+                        this.userInfo = userInfo
+                        this.rootState.login()
+                        this.isActivated = true
+                    })
+                }
+
+            })
+            .catch(error => {
+                runInAction(() => {
+                    this.isActivated = false
+                })
                 console.error(error)
             })
     }
@@ -70,6 +99,8 @@ decorate(ActivationState, {
     step: observable,
     code: observable,
     doesItFinishInputCode: observable,
+    isActivated: observable,
+    userInfo: observable,
 
     /* Actions */
     onSendActivation: action,

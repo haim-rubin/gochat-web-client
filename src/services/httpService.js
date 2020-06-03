@@ -18,3 +18,11 @@ export const verifyActivationCode = ({ code, actionId }) => {
         })
     )
 }
+
+export const getUser = () => {
+    return (
+        get({url: `api//user/info`})
+    )
+}
+
+

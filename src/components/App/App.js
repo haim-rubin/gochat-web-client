@@ -4,7 +4,7 @@ import Activation from '../Activation'
 
 class App extends React.Component {
   componentDidMount(){
-    this.props.appState.iMessages.getUserProfile()
+    this.props.appState.activation. getUserInfo()
     this.props.appState.iMessages.getContacts()
     this.props.appState.iMessages.getMessages()
     //this.props.appState.iMessages.login()
@@ -17,7 +17,7 @@ class App extends React.Component {
     return (
       <div className='app'>
         {
-           activation.isActivated || false
+           activation.isActivated
            ? <Chat></Chat>
            :
            (
