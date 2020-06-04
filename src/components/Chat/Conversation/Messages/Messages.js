@@ -1,9 +1,11 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import Message from './Message'
 
-const Messages = ({messages}) =>{
+const Messages = ({messages, setMessagesContainerRef}) =>{
+    const containerRef = useRef()
+    setMessagesContainerRef(containerRef)
     return (
-        <div className='messages'>
+        <div className='messages' ref={containerRef}>
 			<ul>
                 {
                     messages

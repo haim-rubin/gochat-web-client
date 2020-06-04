@@ -4,14 +4,14 @@ import Activation from '../Activation'
 
 class App extends React.Component {
   componentDidMount(){
-    this.props.appState.activation. getUserInfo()
+    this.props.appState.activation.getUserInfo()
     this.props.appState.iMessages.getContacts()
     this.props.appState.iMessages.getMessages()
-    //this.props.appState.iMessages.login()
     const contactId = 1
     this.props.appState.iMessages.getContactProfile(contactId)
 
   }
+
   render(){
     const { activation } = this.props.appState
     return (

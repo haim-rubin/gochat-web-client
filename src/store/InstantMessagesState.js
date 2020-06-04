@@ -61,13 +61,7 @@ class InstantMessagesState {
   }
   tappedMessage = {}
 
-  increment = function(){
-      this.timer ++;
-  }
-
-  decreament = function(){
-      this.timer--;
-  }
+  containerRef = {}
 
   fetchMessages = () => {
     return (
@@ -91,6 +85,7 @@ class InstantMessagesState {
           runInAction(() =>{
               this.messages = messages
           })
+          this.rootState.scrollToBottom()
       })
   }
 
@@ -123,6 +118,7 @@ class InstantMessagesState {
           runInAction(() =>{
               this.userProfile = userProfile
           })
+          this.rootState.scrollToBottom()
       })
   }
 
@@ -159,6 +155,13 @@ class InstantMessagesState {
   onContactClick = (contact) => {
     console.log(`User ${contact.UserID} selected.`)
     this.currentChat.ParticipanID = contact.UserID
+    this.setCurrentChat(contact)
+  }
+
+  setCurrentChat = (currentChat) => {
+    this.currentChat = currentChat
+    //TODO: load the relevant messages
+    this.rootState.scrollToBottom()
   }
 
   /* WebSocket part */
@@ -183,10 +186,15 @@ class InstantMessagesState {
   }
   onMessageReceived(message){
     console.log('MReceived', message)
+    let scroll
     runInAction(() =>{
+      scroll = this.rootState.shouldScroll()
       this.arrivedMessage = message
       this.messages = this.messages.concat(mapMessage(message, this.currentUser))
     })
+
+    scroll && this.rootState.scrollToBottom()
+
   }
   onClose(message){
 
@@ -206,8 +214,10 @@ class InstantMessagesState {
       MessageType: 1,
     })
     this.onTappedMessage('')
-
   }
+
+
+
 }
 
 decorate(InstantMessagesState, {
@@ -223,6 +233,7 @@ decorate(InstantMessagesState, {
     onMessageReceived: observable,
     tappedMessage: observable,
 
+
     /* Actions */
     getMessages: action,
     getContacts: action,
@@ -235,6 +246,7 @@ decorate(InstantMessagesState, {
 
     onTappedMessage: action,
     onContactClick: action,
+    setCurrentChat: action,
 })
 
 export default InstantMessagesState

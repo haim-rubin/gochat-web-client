@@ -1,5 +1,5 @@
 
-import { observable, decorate, action, configure, runInAction, get } from 'mobx'
+import { observable, decorate, action, configure, runInAction } from 'mobx'
 import { getActivationCode, verifyActivationCode, getUser } from '../services/httpService'
 import { emailRegexPattern, TOKEN_KEYWORD } from '../util/consts'
 configure({enforceActions: 'observed'})

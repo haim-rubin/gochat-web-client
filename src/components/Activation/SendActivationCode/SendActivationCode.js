@@ -25,7 +25,7 @@ const SendActivationCode = ({ onSendActivation, activationDetails, onActivateDet
                             value={activationDetails.email}
                             placeholder='Please enter your email'
                             onChange={({ target }) => onActivateDetailsChange({ email: target.value })}
-                            className='user-input-detail' type='email' placeholder='Email Adress'/>
+                            className='user-input-detail' type='email'/>
                         <div className='input-icon'>
                             <i className='fa fa-envelope'></i>
                         </div>

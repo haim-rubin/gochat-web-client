@@ -7,7 +7,7 @@ const Conversation = ({ appState }) => {
     return (
         <div className='content'>
             <ContactProfile {...appState.iMessages.contactProfile}/>
-            <Messages messages={appState.iMessages.messages} />
+            <Messages messages={appState.iMessages.messages} setMessagesContainerRef={appState.setMessagesContainerRef}/>
             <SendMessagePanel
                 onSend={() => {
                     appState.iMessages.sendTextMessage()
