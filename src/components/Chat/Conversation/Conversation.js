@@ -12,7 +12,7 @@ const Conversation = ({ appState }) => {
                 onSend={() => {
                     appState.iMessages.sendTextMessage()
                 }}
-                value={appState.iMessages.tappedMessage[appState.iMessages.currentChat.ParticipanID || appState.iMessages.currentChat.GroupID] || ''}
+                value={appState.iMessages.tappedMessage[appState.iMessages.currentGroup.ID] || ''}
                 onTappedMessage={appState.iMessages.onTappedMessage}
                 sendTextMessage={() => appState.iMessages.sendTextMessage()}
             />

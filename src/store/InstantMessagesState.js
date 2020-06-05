@@ -3,11 +3,12 @@ import { observable, decorate, action, configure, runInAction } from 'mobx'
 import { userProfileMock, contactProfileMock } from './profiles'
 import { get } from '../util/http'
 import { getQueryURL } from '../util/route'
+import { Message, Group } from './entities'
 configure({enforceActions: 'observed'})
 
 const getDirection = (currentUser, UserID) => {
   return (
-    currentUser.UserID === UserID
+    currentUser.ID === UserID
     ? 'sent'
     : 'received'
   )
@@ -25,10 +26,10 @@ const mapMessage = (message, currentUser) => {
   } = message
   const mappedMessage = {
     direction: getDirection(currentUser, UserID),
-    thumbnail: currentUser.thumbnail,
+    thumbnail: currentUser.Thumbnail,
     content: {
       type: MessageType === 1 && 'text',
-      value: Content
+      value: Content.text
     }
   }
 
@@ -47,18 +48,10 @@ class InstantMessagesState {
   openUserStatusOptions = false
   openUserContactInfo = false
   timer = 0
-  currentChat = {
-    ChatType: 'p2p',
-    ChatID:     '1',
-    GroupID:    null,
-    ParticipanID: '2',
-    UserId:  getQueryURL().uid,
-  }
+
   arrivedMessage = {}
-  currentUser = {
-    thumbnail: 'http://emilcarlsson.se/assets/harveyspecter.png',
-    UserID:  getQueryURL().uid,
-  }
+  currentGroup = new Group({ ID: 1, Nickname: 'Familya', GroupType: 2 })
+
   tappedMessage = {}
 
   containerRef = {}
@@ -149,23 +142,30 @@ class InstantMessagesState {
   }
 
   onTappedMessage = (value) =>{
-    this.tappedMessage[this.currentChat.ParticipanID || this.currentChat.GroupID] = value
+    this.tappedMessage[this.currentGroup.ID] = value
   }
 
   onContactClick = (contact) => {
     console.log(`User ${contact.UserID} selected.`)
-    this.currentChat.ParticipanID = contact.UserID
+    this.currentGroup.ID = contact.GroupID
     this.setCurrentChat(contact)
   }
 
-  setCurrentChat = (currentChat) => {
-    this.currentChat = currentChat
+  setCurrentChat = (currentGroup) => {
+    this.currentGroup = currentGroup
     //TODO: load the relevant messages
     this.rootState.scrollToBottom()
   }
 
+  parseReceivedMessage = ({ Content, ...message }) => {
+    return {
+      ...message,
+      Content: typeof Content === 'string'? JSON.parse(Content) : Content
+    }
+  }
+
   /* WebSocket part */
-  registerInstantMessages(token) {
+  registerInstantMessages = (token) => {
 
     this.webSocketMapperMiddleware.login(token)
       .then(({ connected }) => {
@@ -173,10 +173,10 @@ class InstantMessagesState {
           return
         }
         this.webSocketMapperMiddleware.addEventsListeners({
-          onMessage: this.onMessageReceived.bind(this),
-          onClose: this.onClose.bind(this),
-          onError: this.onError.bind(this),
-          onOpen: this.onOpen.bind(this),
+          onMessage: (message) => this.onMessageReceived(this.parseReceivedMessage(message)),
+          onClose: this.onClose,
+          onError: this.onError,
+          onOpen: this.onOpen,
         })
       })
       .catch(error => {
@@ -184,13 +184,14 @@ class InstantMessagesState {
         console.error('Faild to connect with WS...')
       })
   }
+
   onMessageReceived(message){
     console.log('MReceived', message)
     let scroll
     runInAction(() =>{
       scroll = this.rootState.shouldScroll()
-      this.arrivedMessage = message
-      this.messages = this.messages.concat(mapMessage(message, this.currentUser))
+      this.arrivedMessage = message.Content
+      this.messages = this.messages.concat(mapMessage(message, this.rootState.activation.userInfo))
     })
 
     scroll && this.rootState.scrollToBottom()
@@ -207,12 +208,20 @@ class InstantMessagesState {
     console.log('OnOpen', event)
   }
 
+  getMessageInstance = () => {
+    return (
+      new Message({
+        SenderUserID: this.rootState.activation.userInfo.ID,
+        GroupID: this.currentGroup.ID,
+        //ToUserID: '', //Case its replay
+        MessageType: 1,
+        Content: JSON.stringify({ text: this.tappedMessage[this.currentGroup.ID] }),
+      })
+    )
+  }
+
   sendTextMessage(){
-    this.webSocketMapperMiddleware.send({
-      ...this.currentChat,
-      Content: this.tappedMessage[this.currentChat.ParticipanID || this.currentChat.GroupID],
-      MessageType: 1,
-    })
+    this.webSocketMapperMiddleware.send(this.getMessageInstance())
     this.onTappedMessage('')
   }
 
@@ -228,7 +237,7 @@ decorate(InstantMessagesState, {
     openUserStatusOptions: observable,
     openUserContactInfo: observable,
     timer: observable,
-    currentChat: observable,
+    currentGroup: observable,
     arrivedMessage: observable,
     onMessageReceived: observable,
     tappedMessage: observable,
