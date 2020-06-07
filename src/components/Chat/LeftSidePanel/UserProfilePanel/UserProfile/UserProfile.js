@@ -1,9 +1,9 @@
 import React from 'react'
 
-const UserProfile = ({ Nickname, Thumbnail, Status, onClick }) => {
+const UserProfile = ({ Nickname, Thumbnail='http://emilcarlsson.se/assets/harveyspecter.png', Status, onClick }) => {
     return (
         <div onClick={onClick}>
-            <img src={Thumbnail} className={Status} alt={Nickname} />
+            <img src={'http://emilcarlsson.se/assets/harveyspecter.png'} className={Status} alt={Nickname} />
             <p>{Nickname}</p>
         </div>
     )
